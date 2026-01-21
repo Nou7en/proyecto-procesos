@@ -70,7 +70,7 @@ jobs:
   # 4. Despliegue en Kubernetes
   deploy-local:
     name: Deploy to Local Kubernetes
-    needs: sast-analysis
+    needs: build-image
     runs-on: self-hosted # Ejecuta directamente en tu Windows
     steps:
       - name: Checkout del código
@@ -101,3 +101,13 @@ jobs:
           target: "http://tu-app-en-k8s.com"
           rules_file_name: ".zap/rules.tsv"
           allow_issue_writing: true
+      - name: Subir reporte DAST
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dast-report
+          path: |
+            zap_report.html
+            zap_report.json
+            zap_report.md
+          if-no-files-found: warn
