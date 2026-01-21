@@ -68,24 +68,24 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/crud-platos:latest
 
   # 4. Despliegue en Kubernetes
-  deploy:
-    name: Deploy to Kubernetes
-    needs: build-image
-    runs-on: ubuntu-latest
+  deploy-local:
+    name: Deploy to Local Kubernetes
+    needs: sast-analysis
+    runs-on: self-hosted # Ejecuta directamente en tu Windows
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
 
-      - name: Configurar Contexto de K8s
-        uses: azure/k8s-set-context@v3
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+      - name: Construir Imagen Local
+        # Esto asegura que la imagen más reciente esté disponible para K8s
+        run: docker build -t tchenzha/crud-platos:latest .
 
       - name: Desplegar en Clúster
+        # Al ser self-hosted, usa tu configuración local de kubectl automáticamente
         run: |
           kubectl apply -f k8s/deployment.yml
           kubectl apply -f k8s/service.yml
+          kubectl rollout restart deployment/crud-platos-deployment
 
   # 5. Etapa de Seguridad Dinámica (DAST) con OWASP ZAP
   dast-analysis:
