@@ -95,13 +95,17 @@ jobs:
     env:
       DAST_TARGET: ${{ secrets.DAST_TARGET }}
     steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
       - name: OWASP ZAP Full Scan (Docker)
         shell: powershell
         run: |
+          $workspace = if ($env:GITHUB_WORKSPACE) { $env:GITHUB_WORKSPACE } else { (Get-Location).Path }
           $target = if ($env:DAST_TARGET) { $env:DAST_TARGET } else { 'http://host.docker.internal:32694' }
           Write-Host "Using DAST target: $target"
+          Write-Host "Using workspace: $workspace"
           docker pull ghcr.io/zaproxy/zaproxy:stable
-          docker run --rm -v "$env:GITHUB_WORKSPACE:/zap/wrk/:rw" ghcr.io/zaproxy/zaproxy:stable zap-full-scan.py -t $target -J zap_report.json -w zap_report.md -r zap_report.html
+          docker run --rm -v "$workspace:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-full-scan.py -t $target -J zap_report.json -w zap_report.md -r zap_report.html
       - name: Subir reporte DAST
         if: always()
         uses: actions/upload-artifact@v4
