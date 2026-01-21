@@ -105,7 +105,7 @@ jobs:
           Write-Host "Using DAST target: $target"
           Write-Host "Using workspace: $workspace"
           docker pull ghcr.io/zaproxy/zaproxy:stable
-          docker run --rm -v "$workspace:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-full-scan.py -t $target -J zap_report.json -w zap_report.md -r zap_report.html
+          docker run --rm -v "${workspace}:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-full-scan.py -t $target -J zap_report.json -w zap_report.md -r zap_report.html
       - name: Subir reporte DAST
         if: always()
         uses: actions/upload-artifact@v4
