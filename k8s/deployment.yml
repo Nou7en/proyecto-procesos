@@ -13,7 +13,8 @@ spec:
         app: crud-platos
     spec:
       containers:
-      - name: crud-platos
-        image: tchenzha/crud-platos:latest # Usando tu usuario verificado
-        ports:
-        - containerPort: 5000 # El puerto que definimos en el Dockerfile
+        - name: crud-platos
+          image: tchenzha/crud-platos:latest # Usando tu usuario verificado
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000 # El puerto que definimos en el Dockerfile

@@ -11,8 +11,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copia el resto del código del CRUD
 COPY . .
 
-# Expone el puerto donde corre tu app (ej. 5000 para Flask o 8000 para FastAPI)
+# Expone el puerto donde corre la app
 EXPOSE 5000
 
-# Comando para ejecutar la aplicación
-CMD ["python", "app.py"]
+# Comando para ejecutar la aplicación (FastAPI)
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5000"]

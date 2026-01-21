@@ -101,7 +101,7 @@ jobs:
         shell: powershell
         run: |
           $workspace = if ($env:GITHUB_WORKSPACE) { $env:GITHUB_WORKSPACE } else { (Get-Location).Path }
-          $target = if ($env:DAST_TARGET) { $env:DAST_TARGET } else { 'http://host.docker.internal:32694' }
+          $target = if ($env:DAST_TARGET) { $env:DAST_TARGET } else { 'http://host.docker.internal:80' }
           Write-Host "Using DAST target: $target"
           Write-Host "Using workspace: $workspace"
           docker pull ghcr.io/zaproxy/zaproxy:stable
