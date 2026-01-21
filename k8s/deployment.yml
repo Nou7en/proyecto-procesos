@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crud-platos-deployment
+spec:
+  replicas: 2 # Alta disponibilidad básica
+  selector:
+    matchLabels:
+      app: crud-platos
+  template:
+    metadata:
+      labels:
+        app: crud-platos
+    spec:
+      containers:
+      - name: crud-platos
+        image: tchenzha/crud-platos:latest # Usando tu usuario verificado
+        ports:
+        - containerPort: 5000 # El puerto que definimos en el Dockerfile

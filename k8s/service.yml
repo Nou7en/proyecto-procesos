@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: crud-platos-service
+spec:
+  selector:
+    app: crud-platos
+  ports:
+    - protocol: TCP
+      port: 80       # Puerto externo
+      targetPort: 5000 # Puerto interno del contenedor
+  type: LoadBalancer # En Cloud te da una IP pública; en local actúa como NodePort
