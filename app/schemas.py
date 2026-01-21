@@ -13,7 +13,7 @@ class PlatoBase(BaseModel):
 class PlatoCreate(PlatoBase):
     pass
 
-
+##HOla esta esuna prueba
 class PlatoUpdate(BaseModel):
     nombre: Optional[str] = Field(default=None, min_length=2, max_length=120)
     descripcion: Optional[str] = Field(default=None, max_length=255)
