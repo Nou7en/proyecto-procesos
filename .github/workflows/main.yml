@@ -97,10 +97,15 @@ jobs:
         uses: zaproxy/action-full-scan@v0.9.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          # Reemplaza con la URL de tu servicio en el clúster
-          target: "http://tu-app-en-k8s.com"
-          rules_file_name: ".zap/rules.tsv"
+          # Define la URL real en el secreto DAST_TARGET
+          target: ${{ secrets.DAST_TARGET }}
           allow_issue_writing: true
+      - name: Preparar reportes ZAP
+        if: always()
+        run: |
+          if [ -d /zap/wrk ]; then
+            cp -f /zap/wrk/zap_report.* "$GITHUB_WORKSPACE/" || true
+          fi
       - name: Subir reporte DAST
         if: always()
         uses: actions/upload-artifact@v4
