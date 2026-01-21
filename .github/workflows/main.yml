@@ -92,20 +92,16 @@ jobs:
     name: DAST Scan (OWASP ZAP)
     needs: deploy-local
     runs-on: self-hosted
+    env:
+      DAST_TARGET: ${{ secrets.DAST_TARGET }}
     steps:
-      - name: OWASP ZAP Full Scan
-        uses: zaproxy/action-full-scan@v0.9.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # Define la URL real en el secreto DAST_TARGET
-          target: ${{ secrets.DAST_TARGET }}
-          allow_issue_writing: true
-      - name: Preparar reportes ZAP
-        if: always()
+      - name: OWASP ZAP Full Scan (Docker)
+        shell: pwsh
         run: |
-          if [ -d /zap/wrk ]; then
-            cp -f /zap/wrk/zap_report.* "$GITHUB_WORKSPACE/" || true
-          fi
+          $target = if ($env:DAST_TARGET) { $env:DAST_TARGET } else { 'http://host.docker.internal:32694' }
+          Write-Host "Using DAST target: $target"
+          docker pull ghcr.io/zaproxy/zaproxy:stable
+          docker run --rm -v "$env:GITHUB_WORKSPACE:/zap/wrk/:rw" ghcr.io/zaproxy/zaproxy:stable zap-full-scan.py -t $target -J zap_report.json -w zap_report.md -r zap_report.html
       - name: Subir reporte DAST
         if: always()
         uses: actions/upload-artifact@v4
