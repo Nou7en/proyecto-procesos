@@ -96,7 +96,7 @@ jobs:
       DAST_TARGET: ${{ secrets.DAST_TARGET }}
     steps:
       - name: OWASP ZAP Full Scan (Docker)
-        shell: pwsh
+        shell: powershell
         run: |
           $target = if ($env:DAST_TARGET) { $env:DAST_TARGET } else { 'http://host.docker.internal:32694' }
           Write-Host "Using DAST target: $target"
