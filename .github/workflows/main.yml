@@ -2,9 +2,9 @@ name: CI/CD DevSecOps - CRUD Platos
 
 on:
   push:
-    branches: [ "main" ] # El pipeline se activa al hacer push a la rama principal
+    branches: ["main"] # El pipeline se activa al hacer push a la rama principal
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   # 1. Etapa de Build y Unit Testing
@@ -18,7 +18,7 @@ jobs:
       - name: Configurar Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
       - name: Instalar dependencias
         run: |
@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Requerido para un mejor análisis de SonarCloud
+          fetch-depth: 0 # Requerido para un mejor análisis de SonarCloud
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
@@ -53,13 +53,13 @@ jobs:
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
-      
+
       - name: Login en DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          
+
       - name: Construir y subir imagen
         uses: docker/build-push-action@v5
         with:
@@ -90,7 +90,7 @@ jobs:
   # 5. Etapa de Seguridad Dinámica (DAST) con OWASP ZAP
   dast-analysis:
     name: DAST Scan (OWASP ZAP)
-    needs: deploy
+    needs: deploy-local
     runs-on: ubuntu-latest
     steps:
       - name: OWASP ZAP Full Scan
@@ -98,6 +98,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           # Reemplaza con la URL de tu servicio en el clúster
-          target: 'http://tu-app-en-k8s.com' 
-          rules_file_name: '.zap/rules.tsv'
+          target: "http://tu-app-en-k8s.com"
+          rules_file_name: ".zap/rules.tsv"
           allow_issue_writing: true
